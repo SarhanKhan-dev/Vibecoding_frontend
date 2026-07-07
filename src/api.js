@@ -1,6 +1,7 @@
 // In production (Vercel) set VITE_API_URL to the backend deployment URL,
 // e.g. https://vibecoding-backend.vercel.app — locally the Vite proxy handles it.
-const API_ORIGIN = import.meta.env.VITE_API_URL || '';
+let API_ORIGIN = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+if (API_ORIGIN && !/^https?:\/\//i.test(API_ORIGIN)) API_ORIGIN = `https://${API_ORIGIN}`;
 const BASE = `${API_ORIGIN}/api`;
 
 export const fileUrl = (filename) => `${API_ORIGIN}/uploads/${filename}`;
