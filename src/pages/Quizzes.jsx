@@ -274,6 +274,7 @@ function BuilderModal({ kind, subjects, onDone, onClose }) {
   const [form, setForm] = useState({
     subjectId: subjects[0]?.id || '', title: '', description: '',
     secondsPerQuestion: 60, questionsPerStudent: '', startAt: '', endAt: '',
+    category: kind === 'exam' ? 'final' : 'quiz',
   });
   const [questions, setQuestions] = useState([EMPTY_Q()]);
   const [error, setError] = useState('');
@@ -327,6 +328,16 @@ function BuilderModal({ kind, subjects, onDone, onClose }) {
         <div className="form-row">
           <div className="field"><label>Seconds per question</label><input type="number" min="10" value={form.secondsPerQuestion} onChange={set('secondsPerQuestion')} /></div>
           <div className="field"><label>Questions per student (blank = all)</label><input type="number" min="1" value={form.questionsPerStudent} onChange={set('questionsPerStudent')} placeholder={String(questions.length)} /></div>
+          <div className="field">
+            <label>Counts toward</label>
+            <select value={form.category} onChange={set('category')}>
+              <option value="quiz">Quizzes</option>
+              <option value="assignment">Assignments</option>
+              <option value="mid">Midterm</option>
+              <option value="final">Final</option>
+              <option value="presentation">Presentation</option>
+            </select>
+          </div>
         </div>
         {kind === 'online' && (
           <div className="form-row">
@@ -398,7 +409,7 @@ function ResultsModal({ quizId, onClose }) {
 }
 
 function PostQuizModal({ subjects, onDone, onClose }) {
-  const [form, setForm] = useState({ subjectId: subjects[0]?.id || '', title: '', description: '', totalMarks: 10, date: '' });
+  const [form, setForm] = useState({ subjectId: subjects[0]?.id || '', title: '', description: '', totalMarks: 10, date: '', category: 'quiz' });
   const [error, setError] = useState('');
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
@@ -425,6 +436,16 @@ function PostQuizModal({ subjects, onDone, onClose }) {
         <div className="form-row">
           <div className="field"><label>Total marks</label><input type="number" min="1" value={form.totalMarks} onChange={set('totalMarks')} /></div>
           <div className="field"><label>Date & time</label><input type="datetime-local" value={form.date} onChange={set('date')} /></div>
+          <div className="field">
+            <label>Counts toward</label>
+            <select value={form.category} onChange={set('category')}>
+              <option value="quiz">Quizzes</option>
+              <option value="assignment">Assignments</option>
+              <option value="mid">Midterm</option>
+              <option value="final">Final</option>
+              <option value="presentation">Presentation</option>
+            </select>
+          </div>
         </div>
         <div className="modal-actions">
           <button className="btn" onClick={onClose}>Cancel</button>

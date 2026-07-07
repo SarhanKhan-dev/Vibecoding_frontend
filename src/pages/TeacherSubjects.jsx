@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
+import { HBarChart } from '../components/Charts';
 
 const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#06b6d4', '#8b5cf6', '#ef4444', '#14b8a6'];
 
@@ -7,6 +8,7 @@ export default function TeacherSubjects() {
   const [subjects, setSubjects] = useState([]);
   const [createModal, setCreateModal] = useState(false);
   const [openSubject, setOpenSubject] = useState(null);
+  const [gradebook, setGradebook] = useState(null);
   const [toast, setToast] = useState('');
 
   const load = () => api('/teacher/subjects').then(setSubjects).catch(() => {});
@@ -27,7 +29,7 @@ export default function TeacherSubjects() {
         {subjects.length === 0 && <div className="empty card">No classes yet — create your first one.</div>}
         {subjects.map((s) => (
           <div className="card subject-card" key={s.id} style={{ borderTopColor: s.color }}>
-            <div className="code">{s.code || 'CLASS'}</div>
+            <div className="code">{s.code || 'CLASS'}{s.section ? ` · ${s.section}` : ''}</div>
             <h4>{s.name}</h4>
             <div className="meta">
               {s.room && <span>Room: {s.room}</span>}
@@ -36,6 +38,7 @@ export default function TeacherSubjects() {
             </div>
             <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
               <button className="btn sm primary" onClick={() => setOpenSubject(s)}>Manage students</button>
+              <button className="btn sm" onClick={() => setGradebook(s)}>Gradebook</button>
             </div>
           </div>
         ))}
@@ -43,13 +46,14 @@ export default function TeacherSubjects() {
 
       {createModal && <CreateModal onDone={() => { setCreateModal(false); load(); notify('Class created'); }} onClose={() => setCreateModal(false)} />}
       {openSubject && <StudentsModal subject={openSubject} onChange={load} onClose={() => setOpenSubject(null)} notify={notify} />}
+      {gradebook && <GradebookModal subject={gradebook} onClose={() => setGradebook(null)} />}
       {toast && <div className="toast">{toast}</div>}
     </>
   );
 }
 
 function CreateModal({ onDone, onClose }) {
-  const [form, setForm] = useState({ name: '', code: '', room: '', credits: 3, color: COLORS[0] });
+  const [form, setForm] = useState({ name: '', code: '', room: '', credits: 3, color: COLORS[0], section: '' });
   const [error, setError] = useState('');
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
@@ -68,8 +72,9 @@ function CreateModal({ onDone, onClose }) {
         <div className="field"><label>Name</label><input value={form.name} onChange={set('name')} placeholder="Data Structures" /></div>
         <div className="form-row">
           <div className="field"><label>Code</label><input value={form.code} onChange={set('code')} placeholder="CS-201" /></div>
-          <div className="field"><label>Room</label><input value={form.room} onChange={set('room')} placeholder="B-104" /></div>
+          <div className="field"><label>Section</label><input value={form.section} onChange={set('section')} placeholder="CS-3A" /></div>
         </div>
+        <div className="field"><label>Room</label><input value={form.room} onChange={set('room')} placeholder="B-104" /></div>
         <div className="form-row">
           <div className="field"><label>Credits</label><input type="number" min="1" max="10" value={form.credits} onChange={set('credits')} /></div>
           <div className="field">
@@ -133,6 +138,53 @@ function StudentsModal({ subject, onChange, onClose, notify }) {
               <button className="btn sm ghost" onClick={() => remove(s.id)}>×</button>
             </div>
           ))}
+        </div>
+        <div className="modal-actions"><button className="btn" onClick={onClose}>Close</button></div>
+      </div>
+    </div>
+  );
+}
+
+const CAT_SHORT = { quiz: 'Qz', assignment: 'Asg', mid: 'Mid', final: 'Fin', presentation: 'Pres' };
+
+function GradebookModal({ subject, onClose }) {
+  const [data, setData] = useState(null);
+  useEffect(() => { api(`/gradebook/subject/${subject.id}`).then(setData).catch(() => {}); }, [subject.id]);
+  if (!data) return null;
+  const cats = Object.keys(data.weights);
+  return (
+    <div className="modal-back" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 760 }} onClick={(e) => e.stopPropagation()}>
+        <h2>Gradebook — {subject.name} ({subject.section || 'all sections'})</h2>
+        <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 12 }}>
+          Weights: {cats.map((c) => `${CAT_SHORT[c]} ${data.weights[c]}%`).join(' · ')} — totals compute automatically.
+        </div>
+        <div style={{ overflowX: 'auto' }}>
+          <div className="list" style={{ minWidth: 600 }}>
+            <div className="list-item" style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 700 }}>
+              <div className="grow">STUDENT</div>
+              {cats.map((c) => <div key={c} style={{ width: 52, textAlign: 'center' }}>{CAT_SHORT[c]}</div>)}
+              <div style={{ width: 60, textAlign: 'center' }}>TOTAL</div>
+              <div style={{ width: 44, textAlign: 'center' }}>GRADE</div>
+            </div>
+            {data.rows.length === 0 && <div className="empty">No students enrolled.</div>}
+            {data.rows.map((r) => (
+              <div className="list-item" key={r.studentId}>
+                <div className="grow">
+                  <div className="title">{r.student.name}</div>
+                </div>
+                {cats.map((c) => (
+                  <div key={c} style={{ width: 52, textAlign: 'center', fontSize: 12, color: 'var(--muted)' }}>
+                    {r.breakdown[c] ? `${Math.round(r.breakdown[c].pct)}%` : '—'}
+                  </div>
+                ))}
+                <div style={{ width: 60, textAlign: 'center', fontWeight: 700 }}>{r.total !== null ? `${r.total}%` : '—'}</div>
+                <div style={{ width: 44, textAlign: 'center' }}>
+                  <span className={`badge ${r.total >= 70 ? 'done' : r.total >= 55 ? 'medium' : 'high'}`}>{r.letter ?? '—'}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="modal-actions"><button className="btn" onClick={onClose}>Close</button></div>
       </div>

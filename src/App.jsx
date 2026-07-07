@@ -16,6 +16,7 @@ import Requests from './pages/Requests';
 import TeacherSubjects from './pages/TeacherSubjects';
 import Admin from './pages/Admin';
 import Classwork from './pages/Classwork';
+import ReportCard from './pages/ReportCard';
 
 const NAV_BY_ROLE = {
   student: [
@@ -27,6 +28,7 @@ const NAV_BY_ROLE = {
     { to: '/app/quizzes', label: 'Quizzes & Exams' },
     { to: '/app/classwork', label: 'Digital Assignments' },
     { to: '/app/attendance', label: 'Attendance' },
+    { to: '/app/report-card', label: 'Report Card' },
     { to: '/app/requests', label: 'Requests' },
     { to: '/app/notes', label: 'Notes' },
     { to: '/app/focus', label: 'Focus Timer' },
@@ -106,6 +108,7 @@ function Protected({ theme, setTheme }) {
         <Route path="requests" element={<Requests />} />
         <Route path="classes" element={<TeacherSubjects />} />
         <Route path="classwork" element={<Classwork />} />
+        <Route path="report-card" element={<ReportCard />} />
         <Route path="admin" element={<Admin />} />
         <Route path="*" element={<Navigate to="/app" replace />} />
       </Routes>

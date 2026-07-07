@@ -8,6 +8,7 @@ export default function Admin() {
   const [exams, setExams] = useState([]);
   const [changes, setChanges] = useState([]);
   const [schedModal, setSchedModal] = useState(null);
+  const [createModal, setCreateModal] = useState(false);
   const [toast, setToast] = useState('');
 
   const load = () => {
@@ -44,6 +45,7 @@ export default function Admin() {
           <h1>Admin Console</h1>
           <p>{unscheduled.length} exam{unscheduled.length === 1 ? '' : 's'} awaiting schedule · {pendingChanges.length} teacher-change request{pendingChanges.length === 1 ? '' : 's'} pending.</p>
         </div>
+        <button className="btn primary" onClick={() => setCreateModal(true)}>+ Create user</button>
       </div>
 
       {stats && (
@@ -130,6 +132,7 @@ export default function Admin() {
         </div>
       </div>
 
+      {createModal && <CreateUserModal onDone={() => { setCreateModal(false); load(); notify('User created'); }} onClose={() => setCreateModal(false)} />}
       {schedModal && <ScheduleModal exam={schedModal} onDone={() => { setSchedModal(null); load(); notify('Exam scheduled — students can now see the window'); }} onClose={() => setSchedModal(null)} />}
       {toast && <div className="toast">{toast}</div>}
     </>
@@ -164,6 +167,45 @@ function ScheduleModal({ exam, onDone, onClose }) {
         <div className="modal-actions">
           <button className="btn" onClick={onClose}>Cancel</button>
           <button className="btn primary" onClick={submit}>Set exam time</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CreateUserModal({ onDone, onClose }) {
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'student' });
+  const [error, setError] = useState('');
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+  const submit = async () => {
+    try {
+      await api('/admin/users', { method: 'POST', body: form });
+      onDone();
+    } catch (e) { setError(e.message); }
+  };
+
+  return (
+    <div className="modal-back" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <h2>Create a user</h2>
+        {error && <div className="error-box">{error}</div>}
+        <div className="field"><label>Full name</label><input value={form.name} onChange={set('name')} placeholder="Jane Doe" /></div>
+        <div className="form-row">
+          <div className="field"><label>Email</label><input type="email" value={form.email} onChange={set('email')} placeholder="jane@studyflow.com" /></div>
+          <div className="field"><label>Password</label><input value={form.password} onChange={set('password')} placeholder="min 6 chars" /></div>
+        </div>
+        <div className="field">
+          <label>Role</label>
+          <select value={form.role} onChange={set('role')}>
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+            <option value="superadmin">Superadmin</option>
+          </select>
+        </div>
+        <div className="modal-actions">
+          <button className="btn" onClick={onClose}>Cancel</button>
+          <button className="btn primary" onClick={submit}>Create user</button>
         </div>
       </div>
     </div>
