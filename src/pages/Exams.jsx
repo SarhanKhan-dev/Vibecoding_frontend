@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api, fmtDateTime, daysUntil } from '../api';
+import { HBarChart } from '../components/Charts';
 
 export default function Exams() {
   const [items, setItems] = useState([]);
@@ -42,6 +43,16 @@ export default function Exams() {
         </div>
         <button className="btn primary" onClick={() => setModal({})}>+ Add exam</button>
       </div>
+
+      {upcoming.filter((e) => e.date).length > 0 && (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <h3>Countdown (days until each exam)</h3>
+          <HBarChart suffix="d" data={upcoming.filter((e) => e.date).slice(0, 6).map((e) => {
+            const d = daysUntil(e.date);
+            return { label: e.title, value: d, color: d <= 3 ? '#ef4444' : d <= 7 ? '#f59e0b' : '#10b981' };
+          })} />
+        </div>
+      )}
 
       <div className="grid cols-3">
         {upcoming.length === 0 && <div className="empty card">No upcoming exams.</div>}

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { api, fileUrl, DAYS, DAYS_SHORT } from '../api';
+import { BarChart, Donut } from '../components/Charts';
 
 const START_H = 8, END_H = 20, PX_PER_H = 56;
 const toMin = (t) => { const [h, m] = (t || '0:0').split(':').map(Number); return h * 60 + m; };
@@ -89,6 +90,31 @@ export default function Schedule() {
               })}
             </div>
           ))}
+        </div>
+      </div>
+
+
+      <div className="grid cols-2" style={{ marginTop: 16 }}>
+        <div className="card">
+          <h3>Class hours per day</h3>
+          <BarChart data={DAYS_SHORT.slice(0, 6).map((d, i) => ({
+            label: d,
+            value: +slots.filter((s) => s.day === i).reduce((t, s) => {
+              const [sh, sm] = s.startTime.split(':').map(Number);
+              const [eh, em] = s.endTime.split(':').map(Number);
+              return t + (eh * 60 + em - (sh * 60 + sm)) / 60;
+            }, 0).toFixed(1),
+            color: i === today ? 'var(--primary)' : '#a5a8f0',
+          }))} suffix="h" />
+        </div>
+        <div className="card">
+          <h3>Sessions by type</h3>
+          <Donut data={[
+            { label: 'Lectures', value: slots.filter((s) => s.type === 'lecture').length, color: '#6366f1' },
+            { label: 'Labs', value: slots.filter((s) => s.type === 'lab').length, color: '#f59e0b' },
+            { label: 'Tutorials', value: slots.filter((s) => s.type === 'tutorial').length, color: '#10b981' },
+            { label: 'Other', value: slots.filter((s) => s.type === 'other').length, color: '#9aa1ad' },
+          ]} />
         </div>
       </div>
 

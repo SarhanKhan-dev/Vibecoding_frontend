@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { api, fileUrl, fmtSize, fmtDate } from '../api';
+import { Donut, HBarChart } from '../components/Charts';
 
 const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#06b6d4', '#8b5cf6', '#ef4444', '#14b8a6'];
+const GRADE_POINTS = { 'A+': 4.0, A: 4.0, 'A-': 3.7, 'B+': 3.3, B: 3.0, 'B-': 2.7, 'C+': 2.3, C: 2.0, 'C-': 1.7, 'D+': 1.3, D: 1.0, F: 0 };
 const GRADES = ['', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'F'];
 
 export default function Subjects() {
@@ -43,6 +45,21 @@ export default function Subjects() {
           </p>
         </div>
         <button className="btn primary" onClick={() => setModal({ color: COLORS[subjects.length % COLORS.length], credits: 3, grade: '' })}>+ Add subject</button>
+      </div>
+
+      <div className="grid cols-2" style={{ marginBottom: 16 }}>
+        <div className="card">
+          <h3>Grade points by subject</h3>
+          {subjects.filter((s) => s.grade).length === 0
+            ? <div className="empty">Add grades to subjects to see this chart.</div>
+            : <HBarChart data={subjects.filter((s) => s.grade).map((s) => ({
+                label: s.name, value: GRADE_POINTS[s.grade] ?? 0, color: s.color,
+              }))} />}
+        </div>
+        <div className="card">
+          <h3>Credits distribution</h3>
+          <Donut data={subjects.map((s) => ({ label: s.code || s.name, value: s.credits, color: s.color }))} />
+        </div>
       </div>
 
       <div className="grid cols-3">

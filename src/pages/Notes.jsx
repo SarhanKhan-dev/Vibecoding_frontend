@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api, fmtDate } from '../api';
+import { HBarChart } from '../components/Charts';
 
 export default function Notes() {
   const [items, setItems] = useState([]);
@@ -46,6 +47,16 @@ export default function Notes() {
           <button className="btn primary" onClick={() => setModal({ pinned: false })}>+ New note</button>
         </div>
       </div>
+
+      {items.length > 0 && (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <h3>Notes per subject</h3>
+          <HBarChart data={[...subjects.map((s) => ({
+            label: s.name, value: items.filter((n) => n.subjectId === s.id).length, color: s.color,
+          })), { label: 'General', value: items.filter((n) => !n.subjectId).length, color: '#9aa1ad' }]
+            .filter((d) => d.value > 0)} />
+        </div>
+      )}
 
       <div className="grid cols-3">
         {shown.length === 0 && <div className="empty card">No notes found.</div>}

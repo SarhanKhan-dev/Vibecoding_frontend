@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { BarChart } from '../components/Charts';
 
 const MODES = [
   { key: 'focus', label: 'Focus', mins: 25 },
@@ -86,6 +87,14 @@ export default function Focus() {
             <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 6 }}>Daily goal: 4 pomodoros</div>
             <div className="progressbar"><div style={{ width: `${Math.min(100, (sessions / 4) * 100)}%` }} /></div>
           </div>
+          <h3>This week's focus minutes</h3>
+          <BarChart suffix="m" data={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) => {
+            const base = [75, 50, 100, 25, 50, 0, 0][i];
+            const jsDay = new Date().getDay();
+            const todayIdx = jsDay === 0 ? 6 : jsDay - 1;
+            return { label: d, value: i === todayIdx ? sessions * 25 : (i < todayIdx ? base : 0), color: i === todayIdx ? 'var(--primary)' : '#a5a8f0' };
+          })} />
+          <div style={{ height: 14 }} />
           <h3>How it works</h3>
           <div style={{ color: 'var(--muted)', fontSize: 13, lineHeight: 1.7 }}>
             1. Pick a task (an assignment works great).<br />

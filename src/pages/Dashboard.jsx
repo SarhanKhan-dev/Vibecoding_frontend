@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api, getUser, DAYS, fmtDateTime, daysUntil } from '../api';
+import { api, getUser, DAYS, DAYS_SHORT, fmtDateTime, daysUntil } from '../api';
+import { BarChart, Donut } from '../components/Charts';
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [subjects, setSubjects] = useState([]);
+  const [slots, setSlots] = useState([]);
   const user = getUser();
 
   useEffect(() => {
     api('/dashboard').then(setData).catch(() => {});
     api('/subjects').then(setSubjects).catch(() => {});
+    api('/schedule').then(setSlots).catch(() => {});
   }, []);
 
   if (!data) return <div className="empty">Loading your dashboard…</div>;
@@ -33,6 +36,29 @@ export default function Dashboard() {
         <div className="card stat"><span className="num">{stats.classesPerWeek}</span><span className="lbl">Classes / week</span></div>
         <div className="card stat"><span className="num">{stats.pendingAssignments}</span><span className="lbl">Pending tasks {data.overdueCount > 0 && <span style={{ color: 'var(--red)' }}>({data.overdueCount} overdue)</span>}</span></div>
         <div className="card stat"><span className="num">{stats.gpa ?? '—'}</span><span className="lbl">Current GPA</span></div>
+      </div>
+
+      <div className="grid cols-2" style={{ marginBottom: 16 }}>
+        <div className="card">
+          <h3>Weekly workload (class hours per day)</h3>
+          <BarChart data={DAYS_SHORT.slice(0, 6).map((d, i) => ({
+            label: d,
+            value: +slots.filter((s) => s.day === i).reduce((t, s) => {
+              const [sh, sm] = s.startTime.split(':').map(Number);
+              const [eh, em] = s.endTime.split(':').map(Number);
+              return t + (eh * 60 + em - (sh * 60 + sm)) / 60;
+            }, 0).toFixed(1),
+            color: i === data.today ? 'var(--primary)' : '#a5a8f0',
+          }))} suffix="h" />
+        </div>
+        <div className="card">
+          <h3>Assignment status breakdown</h3>
+          <Donut data={[
+            { label: 'Completed', value: stats.completedAssignments, color: '#10b981' },
+            { label: 'Pending', value: Math.max(0, stats.pendingAssignments - data.overdueCount), color: '#6366f1' },
+            { label: 'Overdue', value: data.overdueCount, color: '#ef4444' },
+          ]} />
+        </div>
       </div>
 
       <div className="grid cols-2" style={{ marginBottom: 16 }}>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api, fmtDateTime, daysUntil } from '../api';
+import { BarChart, Donut } from '../components/Charts';
 
 const TABS = [
   { key: 'all', label: 'All' },
@@ -58,6 +59,25 @@ export default function Assignments() {
         {TABS.map((t) => (
           <button key={t.key} className={tab === t.key ? 'active' : ''} onClick={() => setTab(t.key)}>{t.label}</button>
         ))}
+      </div>
+
+      <div className="grid cols-2" style={{ marginBottom: 16 }}>
+        <div className="card">
+          <h3>Status overview</h3>
+          <Donut data={[
+            { label: 'To do', value: items.filter((a) => a.status === 'todo').length, color: '#6366f1' },
+            { label: 'In progress', value: items.filter((a) => a.status === 'in_progress').length, color: '#f59e0b' },
+            { label: 'Done', value: items.filter((a) => a.status === 'done').length, color: '#10b981' },
+          ]} />
+        </div>
+        <div className="card">
+          <h3>Pending by priority</h3>
+          <BarChart data={[
+            { label: 'High', value: items.filter((a) => a.status !== 'done' && a.priority === 'high').length, color: '#ef4444' },
+            { label: 'Medium', value: items.filter((a) => a.status !== 'done' && a.priority === 'medium').length, color: '#f59e0b' },
+            { label: 'Low', value: items.filter((a) => a.status !== 'done' && a.priority === 'low').length, color: '#10b981' },
+          ]} />
+        </div>
       </div>
 
       <div className="card">
