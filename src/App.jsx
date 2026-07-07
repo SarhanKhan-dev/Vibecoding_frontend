@@ -15,6 +15,7 @@ import AttendancePage from './pages/AttendancePage';
 import Requests from './pages/Requests';
 import TeacherSubjects from './pages/TeacherSubjects';
 import Admin from './pages/Admin';
+import Classwork from './pages/Classwork';
 
 const NAV_BY_ROLE = {
   student: [
@@ -23,23 +24,24 @@ const NAV_BY_ROLE = {
     { to: '/app/subjects', label: 'Subjects & Slides' },
     { to: '/app/assignments', label: 'Assignments' },
     { to: '/app/exams', label: 'Exams' },
-    { to: '/app/quizzes', label: 'Quizzes' },
+    { to: '/app/quizzes', label: 'Quizzes & Exams' },
+    { to: '/app/classwork', label: 'Digital Assignments' },
     { to: '/app/attendance', label: 'Attendance' },
-    { to: '/app/requests', label: 'Leave Applications' },
+    { to: '/app/requests', label: 'Requests' },
     { to: '/app/notes', label: 'Notes' },
     { to: '/app/focus', label: 'Focus Timer' },
   ],
   teacher: [
     { to: '/app/classes', label: 'My Classes' },
     { to: '/app/attendance', label: 'Attendance' },
-    { to: '/app/quizzes', label: 'Quizzes' },
+    { to: '/app/quizzes', label: 'Quizzes & Exams' },
+    { to: '/app/classwork', label: 'Digital Assignments' },
     { to: '/app/requests', label: 'Student Requests' },
   ],
   superadmin: [
     { to: '/app/admin', label: 'Admin Console' },
     { to: '/app/classes', label: 'My Classes' },
-    { to: '/app/attendance', label: 'Attendance' },
-    { to: '/app/quizzes', label: 'Quizzes' },
+    { to: '/app/quizzes', label: 'Quizzes & Exams' },
     { to: '/app/requests', label: 'Student Requests' },
   ],
 };
@@ -103,6 +105,7 @@ function Protected({ theme, setTheme }) {
         <Route path="attendance" element={<AttendancePage />} />
         <Route path="requests" element={<Requests />} />
         <Route path="classes" element={<TeacherSubjects />} />
+        <Route path="classwork" element={<Classwork />} />
         <Route path="admin" element={<Admin />} />
         <Route path="*" element={<Navigate to="/app" replace />} />
       </Routes>

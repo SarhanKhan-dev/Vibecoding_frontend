@@ -77,15 +77,17 @@ export default function Login({ register = false }) {
             </button>
           </form>
           {!register && (
-            <div className="demo-hint" onClick={fillDemo}>
-              Student: demo@student.com / demo123 — click to fill
-            </div>
-            <div className="demo-hint" onClick={() => setForm({ ...form, email: 'teacher@studyflow.com', password: 'teacher123' })}>
-              Teacher: teacher@studyflow.com / teacher123 — click to fill
-            </div>
-            <div className="demo-hint" onClick={() => setForm({ ...form, email: 'admin@studyflow.com', password: 'admin123' })}>
-              Superadmin: admin@studyflow.com / admin123 — click to fill
-            </div>
+            <>
+              <div className="demo-hint" onClick={fillDemo}>
+                Student: demo@student.com / demo123 — click to fill
+              </div>
+              <div className="demo-hint" onClick={() => setForm({ ...form, email: 'teacher@studyflow.com', password: 'teacher123' })}>
+                Teacher: teacher@studyflow.com / teacher123 — click to fill
+              </div>
+              <div className="demo-hint" onClick={() => setForm({ ...form, email: 'admin@studyflow.com', password: 'admin123' })}>
+                Superadmin: admin@studyflow.com / admin123 — click to fill
+              </div>
+            </>
           )}
           <div className="auth-switch">
             {register ? <>Already have an account? <Link to="/login">Log in</Link></>

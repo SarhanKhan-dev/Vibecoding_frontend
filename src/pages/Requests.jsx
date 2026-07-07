@@ -104,8 +104,84 @@ function StudentRequests() {
           </div>
         </div>
       </div>
+      <TeacherChangeSection enrolled={enrolled} notify={notify} />
       {toast && <div className="toast">{toast}</div>}
     </>
+  );
+}
+
+function TeacherChangeSection({ enrolled, notify }) {
+  const [items, setItems] = useState([]);
+  const [form, setForm] = useState({ subjectId: '', reason: '', desiredTeacher: '' });
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const fileRef = useRef();
+
+  const load = () => api('/teacher-change').then(setItems).catch(() => {});
+  useEffect(load, []);
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+  const submit = async () => {
+    if (!form.reason.trim()) { setError('A clear reason is required for the superadmin to review.'); return; }
+    setBusy(true); setError('');
+    try {
+      const fd = new FormData();
+      Object.entries(form).forEach(([k, v]) => v && fd.append(k, v));
+      if (fileRef.current.files[0]) fd.append('file', fileRef.current.files[0]);
+      await api('/teacher-change', { method: 'POST', formData: fd });
+      setForm({ subjectId: '', reason: '', desiredTeacher: '' });
+      fileRef.current.value = '';
+      load(); notify('Request sent to the superadmin');
+    } catch (e) { setError(e.message); } finally { setBusy(false); }
+  };
+
+  return (
+    <div className="grid cols-2" style={{ alignItems: 'start', marginTop: 16 }}>
+      <div className="card">
+        <h3>Request a teacher change (reviewed by superadmin)</h3>
+        {error && <div className="error-box">{error}</div>}
+        <div className="field">
+          <label>Class (optional)</label>
+          <select value={form.subjectId} onChange={set('subjectId')}>
+            <option value="">— General —</option>
+            {enrolled.map((s) => <option key={s.id} value={s.id}>{s.name} ({s.code}) — {s.teacher}</option>)}
+          </select>
+        </div>
+        <div className="field">
+          <label>Preferred teacher / section</label>
+          <input value={form.desiredTeacher} onChange={set('desiredTeacher')} placeholder="e.g. Dr. Fatima Noor (evening section)" />
+        </div>
+        <div className="field">
+          <label>Reason</label>
+          <textarea rows="4" value={form.reason} onChange={set('reason')}
+            placeholder="Explain clearly why the change is needed — scheduling conflict, medical grounds, etc." />
+        </div>
+        <div className="field">
+          <label>Supporting document (optional)</label>
+          <input type="file" ref={fileRef} />
+        </div>
+        <button className="btn primary" style={{ width: '100%', justifyContent: 'center' }} disabled={busy} onClick={submit}>
+          {busy ? 'Sending…' : 'Send to superadmin'}
+        </button>
+      </div>
+      <div className="card">
+        <h3>My teacher-change requests</h3>
+        <div className="list">
+          {items.length === 0 && <div className="empty">No requests yet.</div>}
+          {items.map((r) => (
+            <div className="list-item" key={r.id}>
+              <div className="grow">
+                <div className="title">{r.subject?.name || 'General'}{r.desiredTeacher ? ` → ${r.desiredTeacher}` : ''}</div>
+                <div className="sub">{r.reason}</div>
+                {r.adminComment && <div className="sub" style={{ color: 'var(--primary)' }}>Admin: {r.adminComment}</div>}
+              </div>
+              {r.filename && <a className="btn sm" href={fileUrl(r.filename)} target="_blank" rel="noreferrer">Doc</a>}
+              <span className={statusBadge(r.status)}>{r.status}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
