@@ -44,7 +44,7 @@ export default function TeacherSubjects() {
         ))}
       </div>
 
-      {createModal && <CreateModal onDone={() => { setCreateModal(false); load(); notify('Class created'); }} onClose={() => setCreateModal(false)} />}
+      {createModal && <CreateModal onDone={(msg) => { setCreateModal(false); load(); notify(msg); }} onClose={() => setCreateModal(false)} />}
       {openSubject && <StudentsModal subject={openSubject} onChange={load} onClose={() => setOpenSubject(null)} notify={notify} />}
       {gradebook && <GradebookModal subject={gradebook} onClose={() => setGradebook(null)} />}
       {toast && <div className="toast">{toast}</div>}
@@ -54,13 +54,25 @@ export default function TeacherSubjects() {
 
 function CreateModal({ onDone, onClose }) {
   const [form, setForm] = useState({ name: '', code: '', room: '', credits: 3, color: COLORS[0], section: '' });
+  const [sections, setSections] = useState([]);
+  const [newSection, setNewSection] = useState(false);
   const [error, setError] = useState('');
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
+  useEffect(() => {
+    api('/teacher/sections').then((secs) => {
+      setSections(secs);
+      if (secs[0]) setForm((f) => ({ ...f, section: secs[0].section }));
+      else setNewSection(true);
+    }).catch(() => setNewSection(true));
+  }, []);
+
   const submit = async () => {
     try {
-      await api('/teacher/subjects', { method: 'POST', body: { ...form, credits: +form.credits || 3 } });
-      onDone();
+      const res = await api('/teacher/subjects', { method: 'POST', body: { ...form, credits: +form.credits || 3 } });
+      onDone(res.autoEnrolled > 0
+        ? `Class created — ${res.autoEnrolled} student${res.autoEnrolled === 1 ? '' : 's'} from ${form.section} auto-enrolled`
+        : 'Class created');
     } catch (e) { setError(e.message); }
   };
 
@@ -72,7 +84,18 @@ function CreateModal({ onDone, onClose }) {
         <div className="field"><label>Name</label><input value={form.name} onChange={set('name')} placeholder="Data Structures" /></div>
         <div className="form-row">
           <div className="field"><label>Code</label><input value={form.code} onChange={set('code')} placeholder="CS-201" /></div>
-          <div className="field"><label>Section</label><input value={form.section} onChange={set('section')} placeholder="CS-3A" /></div>
+          <div className="field">
+            <label>Section (students auto-enroll)</label>
+            {newSection ? (
+              <input autoFocus value={form.section} onChange={set('section')} placeholder="e.g. CS-3A" />
+            ) : (
+              <select value={form.section}
+                onChange={(e) => e.target.value === '__new' ? (setNewSection(true), setForm({ ...form, section: '' })) : setForm({ ...form, section: e.target.value })}>
+                {sections.map((sec) => <option key={sec.section} value={sec.section}>{sec.section} ({sec.students} students)</option>)}
+                <option value="__new">+ New section…</option>
+              </select>
+            )}
+          </div>
         </div>
         <div className="field"><label>Room</label><input value={form.room} onChange={set('room')} placeholder="B-104" /></div>
         <div className="form-row">
