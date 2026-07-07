@@ -123,7 +123,7 @@ export default function Schedule() {
 
 function SlotModal({ slot, subjects, onSave, onDelete, onClose }) {
   const [form, setForm] = useState({
-    title: '', room: '', subjectId: '', ...slot,
+    title: '', room: '', ...slot,
     subjectId: slot.subjectId || '',
   });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });

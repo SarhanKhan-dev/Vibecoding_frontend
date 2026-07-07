@@ -94,7 +94,7 @@ export default function Assignments() {
 }
 
 function AssignmentModal({ item, subjects, onSave, onDelete, onClose }) {
-  const [form, setForm] = useState({ title: '', description: '', subjectId: '', dueDate: '', ...item, subjectId: item.subjectId || '' });
+  const [form, setForm] = useState({ title: '', description: '', dueDate: '', ...item, subjectId: item.subjectId || '' });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   return (
     <div className="modal-back" onClick={onClose}>

@@ -76,7 +76,7 @@ export default function Notes() {
 }
 
 function NoteModal({ item, subjects, onSave, onDelete, onClose }) {
-  const [form, setForm] = useState({ title: '', content: '', subjectId: '', ...item, subjectId: item.subjectId || '' });
+  const [form, setForm] = useState({ title: '', content: '', ...item, subjectId: item.subjectId || '' });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   return (
     <div className="modal-back" onClick={onClose}>

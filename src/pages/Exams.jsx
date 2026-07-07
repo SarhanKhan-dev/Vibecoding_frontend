@@ -93,7 +93,7 @@ export default function Exams() {
 }
 
 function ExamModal({ item, subjects, onSave, onDelete, onClose }) {
-  const [form, setForm] = useState({ title: '', location: '', notes: '', date: '', subjectId: '', ...item, subjectId: item.subjectId || '' });
+  const [form, setForm] = useState({ title: '', location: '', notes: '', date: '', ...item, subjectId: item.subjectId || '' });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   return (
     <div className="modal-back" onClick={onClose}>
