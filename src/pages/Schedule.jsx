@@ -28,7 +28,7 @@ export default function Schedule() {
     const body = { ...form, day: +form.day, subjectId: form.subjectId ? +form.subjectId : null };
     if (form.id) await api(`/schedule/${form.id}`, { method: 'PATCH', body });
     else await api('/schedule', { method: 'POST', body });
-    setModal(null); load(); notify('Schedule updated ✓');
+    setModal(null); load(); notify('Schedule updated');
   };
   const remove = async (id) => {
     await api(`/schedule/${id}`, { method: 'DELETE' });
@@ -40,7 +40,7 @@ export default function Schedule() {
     const fd = new FormData();
     fd.append('file', file);
     await api('/schedule/upload', { method: 'POST', formData: fd });
-    load(); notify('Timetable uploaded ✓ — now add your classes to the grid');
+    load(); notify('Timetable uploaded — now add your classes to the grid');
   };
 
   const hours = [];
@@ -56,7 +56,7 @@ export default function Schedule() {
         <div style={{ display: 'flex', gap: 8 }}>
           <input type="file" ref={fileRef} hidden accept="image/*,.pdf,.png,.jpg,.jpeg,.webp"
             onChange={(e) => uploadTimetable(e.target.files[0])} />
-          <button className="btn" onClick={() => fileRef.current.click()}>📎 Upload timetable file</button>
+          <button className="btn" onClick={() => fileRef.current.click()}>Upload timetable file</button>
           <button className="btn primary" onClick={() => setModal({ day: today, startTime: '09:00', endTime: '10:30', type: 'lecture' })}>+ Add class</button>
         </div>
       </div>
@@ -94,11 +94,11 @@ export default function Schedule() {
 
       {uploads.length > 0 && (
         <div className="card" style={{ marginTop: 16 }}>
-          <h3>📎 Uploaded timetable files</h3>
+          <h3>Uploaded timetable files</h3>
           <div className="list">
             {uploads.map((f) => (
               <div className="list-item" key={f.id}>
-                <div className="file-ico">🗓</div>
+                <div className="file-ico">FILE</div>
                 <div className="grow">
                   <div className="title">{f.originalName}</div>
                   <div className="sub">Reference copy of your original timetable</div>
@@ -182,5 +182,4 @@ function SlotModal({ slot, subjects, onSave, onDelete, onClose }) {
         </div>
       </div>
     </div>
-  );
-}
+  )

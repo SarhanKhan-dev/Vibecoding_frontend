@@ -20,7 +20,7 @@ export default function Notes() {
     const body = { ...form, subjectId: form.subjectId ? +form.subjectId : null };
     if (form.id) await api(`/notes/${form.id}`, { method: 'PATCH', body });
     else await api('/notes', { method: 'POST', body });
-    setModal(null); load(); notify('Note saved ✓');
+    setModal(null); load(); notify('Note saved');
   };
   const remove = async (id) => {
     await api(`/notes/${id}`, { method: 'DELETE' });
@@ -42,7 +42,7 @@ export default function Notes() {
           <p>Quick notes, cheatsheets and reminders.</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input placeholder="🔍 Search notes…" value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 200 }} />
+          <input placeholder="Search notes…" value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 200 }} />
           <button className="btn primary" onClick={() => setModal({ pinned: false })}>+ New note</button>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function Notes() {
                 {s && <span className="dot" style={{ background: s.color }} />}
                 <b style={{ fontSize: 14, flex: 1 }}>{n.title}</b>
                 <button className="btn sm ghost" title="Pin" style={{ color: n.pinned ? 'var(--amber)' : undefined }}
-                  onClick={() => togglePin(n)}>📌</button>
+                  onClick={() => togglePin(n)}>{n.pinned ? 'Pinned' : 'Pin'}</button>
               </div>
               <div className="content">{n.content}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 'auto' }}>

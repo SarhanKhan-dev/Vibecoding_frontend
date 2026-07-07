@@ -23,7 +23,7 @@ export default function Exams() {
     };
     if (form.id) await api(`/exams/${form.id}`, { method: 'PATCH', body });
     else await api('/exams', { method: 'POST', body });
-    setModal(null); load(); notify('Exam saved ✓');
+    setModal(null); load(); notify('Exam saved');
   };
   const remove = async (id) => {
     await api(`/exams/${id}`, { method: 'DELETE' });
@@ -44,7 +44,7 @@ export default function Exams() {
       </div>
 
       <div className="grid cols-3">
-        {upcoming.length === 0 && <div className="empty card">No upcoming exams. 🏖</div>}
+        {upcoming.length === 0 && <div className="empty card">No upcoming exams.</div>}
         {upcoming.map((e) => {
           const d = daysUntil(e.date);
           const s = sub(e.subjectId);
@@ -53,9 +53,9 @@ export default function Exams() {
               <div className="code">{s?.name || 'GENERAL'}</div>
               <h4>{e.title}</h4>
               <div className="meta">
-                <span>📅 {fmtDateTime(e.date)}</span>
-                {e.location && <span>📍 {e.location}</span>}
-                {e.notes && <span>📋 {e.notes}</span>}
+                <span>{fmtDateTime(e.date)}</span>
+                {e.location && <span>{e.location}</span>}
+                {e.notes && <span>{e.notes}</span>}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 }}>
                 <span className={`badge ${d !== null && d <= 3 ? 'high' : 'medium'}`}>
@@ -79,7 +79,7 @@ export default function Exams() {
                   <div className="title" style={{ opacity: .65 }}>{e.title}</div>
                   <div className="sub">{fmtDateTime(e.date)}</div>
                 </div>
-                <button className="btn sm ghost" onClick={() => remove(e.id)}>✕</button>
+                <button className="btn sm ghost" onClick={() => remove(e.id)}>×</button>
               </div>
             ))}
           </div>

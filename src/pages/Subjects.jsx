@@ -24,7 +24,7 @@ export default function Subjects() {
     const body = { ...form, credits: +form.credits || 0 };
     if (form.id) await api(`/subjects/${form.id}`, { method: 'PATCH', body });
     else await api('/subjects', { method: 'POST', body });
-    setModal(null); load(); notify('Subject saved ✓');
+    setModal(null); load(); notify('Subject saved');
   };
   const remove = async (id) => {
     await api(`/subjects/${id}`, { method: 'DELETE' });
@@ -54,13 +54,13 @@ export default function Subjects() {
               <div className="code">{s.code || 'SUBJECT'}</div>
               <h4>{s.name}</h4>
               <div className="meta">
-                {s.teacher && <span>👤 {s.teacher}</span>}
-                {s.room && <span>📍 {s.room}</span>}
-                <span>🎓 {s.credits} credits{s.grade ? ` · Grade: ${s.grade}` : ''}</span>
-                <span>📑 {count} file{count === 1 ? '' : 's'}</span>
+                {s.teacher && <span>{s.teacher}</span>}
+                {s.room && <span>{s.room}</span>}
+                <span>{s.credits} credits{s.grade ? ` · Grade: ${s.grade}` : ''}</span>
+                <span>{count} file{count === 1 ? '' : 's'}</span>
               </div>
               <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
-                <button className="btn sm primary" onClick={() => setOpenSubject(s)}>📚 Slides</button>
+                <button className="btn sm primary" onClick={() => setOpenSubject(s)}>Slides</button>
                 <button className="btn sm" onClick={() => setModal({ ...s })}>Edit</button>
               </div>
             </div>
@@ -134,14 +134,14 @@ function SlidesDrawer({ subject, files, onChange, onClose, notify }) {
       fd.append('file', file);
       fd.append('subjectId', subject.id);
       await api('/files/upload', { method: 'POST', formData: fd });
-      onChange(); notify('Slide uploaded ✓');
+      onChange(); notify('Slide uploaded');
     } finally { setBusy(false); }
   };
   const remove = async (id) => {
     await api(`/files/${id}`, { method: 'DELETE' });
     onChange(); notify('File deleted');
   };
-  const icon = (m) => m.includes('pdf') ? '📄' : m.includes('image') ? '🖼' : m.includes('presentation') || m.includes('powerpoint') ? '📊' : '📁';
+  const icon = (m) => m.includes('pdf') ? 'PDF' : m.includes('image') ? 'IMG' : m.includes('presentation') || m.includes('powerpoint') ? 'PPT' : 'FILE';
 
   return (
     <div className="modal-back" onClick={onClose}>
@@ -149,7 +149,7 @@ function SlidesDrawer({ subject, files, onChange, onClose, notify }) {
         <h2><span className="dot" style={{ background: subject.color, marginRight: 6 }} />{subject.name} — Slides & materials</h2>
         <input type="file" ref={fileRef} hidden onChange={(e) => upload(e.target.files[0])} />
         <div className="upload-zone" onClick={() => fileRef.current.click()}>
-          {busy ? 'Uploading…' : '⬆️ Click to upload slides, PDFs, images or any lecture material'}
+          {busy ? 'Uploading…' : 'Click to upload slides, PDFs, images or any lecture material'}
         </div>
         <div className="list" style={{ marginTop: 12 }}>
           {files.length === 0 && <div className="empty">No materials yet for this subject.</div>}
@@ -161,7 +161,7 @@ function SlidesDrawer({ subject, files, onChange, onClose, notify }) {
                 <div className="sub">{fmtSize(f.size)} · {fmtDate(f.uploadedAt)}</div>
               </div>
               <a className="btn sm" href={fileUrl(f.filename)} target="_blank" rel="noreferrer">Open</a>
-              <button className="btn sm ghost" onClick={() => remove(f.id)}>✕</button>
+              <button className="btn sm ghost" onClick={() => remove(f.id)}>×</button>
             </div>
           ))}
         </div>

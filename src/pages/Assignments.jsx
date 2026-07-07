@@ -31,7 +31,7 @@ export default function Assignments() {
     };
     if (form.id) await api(`/assignments/${form.id}`, { method: 'PATCH', body });
     else await api('/assignments', { method: 'POST', body });
-    setModal(null); load(); notify('Assignment saved ✓');
+    setModal(null); load(); notify('Assignment saved');
   };
   const remove = async (id) => {
     await api(`/assignments/${id}`, { method: 'DELETE' });
@@ -62,7 +62,7 @@ export default function Assignments() {
 
       <div className="card">
         <div className="list">
-          {shown.length === 0 && <div className="empty">Nothing here. 🎉</div>}
+          {shown.length === 0 && <div className="empty">Nothing here.</div>}
           {shown.map((a) => {
             const d = daysUntil(a.dueDate);
             const s = sub(a.subjectId);

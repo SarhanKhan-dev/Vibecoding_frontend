@@ -22,24 +22,24 @@ export default function Dashboard() {
     <>
       <div className="page-head">
         <div>
-          <h1>Hey {user?.name?.split(' ')[0]} 👋</h1>
+          <h1>Hey {user?.name?.split(' ')[0]}</h1>
           <p>Here's what your {DAYS[data.today]} looks like.</p>
         </div>
-        <Link to="/app/focus" className="btn primary">⏱ Start a focus session</Link>
+        <Link to="/app/focus" className="btn primary">Start a focus session</Link>
       </div>
 
       <div className="grid cols-4" style={{ marginBottom: 16 }}>
-        <div className="card stat"><span className="ico">📚</span><span className="num">{stats.subjects}</span><span className="lbl">Subjects</span></div>
-        <div className="card stat"><span className="ico">🗓</span><span className="num">{stats.classesPerWeek}</span><span className="lbl">Classes / week</span></div>
-        <div className="card stat"><span className="ico">⏳</span><span className="num">{stats.pendingAssignments}</span><span className="lbl">Pending tasks {data.overdueCount > 0 && <span style={{ color: 'var(--red)' }}>({data.overdueCount} overdue)</span>}</span></div>
-        <div className="card stat"><span className="ico">📈</span><span className="num">{stats.gpa ?? '—'}</span><span className="lbl">Current GPA</span></div>
+        <div className="card stat"><span className="num">{stats.subjects}</span><span className="lbl">Subjects</span></div>
+        <div className="card stat"><span className="num">{stats.classesPerWeek}</span><span className="lbl">Classes / week</span></div>
+        <div className="card stat"><span className="num">{stats.pendingAssignments}</span><span className="lbl">Pending tasks {data.overdueCount > 0 && <span style={{ color: 'var(--red)' }}>({data.overdueCount} overdue)</span>}</span></div>
+        <div className="card stat"><span className="num">{stats.gpa ?? '—'}</span><span className="lbl">Current GPA</span></div>
       </div>
 
       <div className="grid cols-2" style={{ marginBottom: 16 }}>
         <div className="card">
-          <h3>🗓 Today's classes <Link to="/app/schedule" style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--primary)' }}>Full schedule →</Link></h3>
+          <h3>Today's classes <Link to="/app/schedule" style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--primary)' }}>Full schedule →</Link></h3>
           <div className="list">
-            {data.todayClasses.length === 0 && <div className="empty">No classes today. Enjoy! 🎉</div>}
+            {data.todayClasses.length === 0 && <div className="empty">No classes today. Enjoy!</div>}
             {data.todayClasses.map((c) => {
               const s = sub(c.subjectId);
               return (
@@ -56,9 +56,9 @@ export default function Dashboard() {
         </div>
 
         <div className="card">
-          <h3>✅ Due soon <Link to="/app/assignments" style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--primary)' }}>All assignments →</Link></h3>
+          <h3>Due soon <Link to="/app/assignments" style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--primary)' }}>All assignments →</Link></h3>
           <div className="list">
-            {data.upcomingAssignments.length === 0 && <div className="empty">Nothing due in the next 7 days 🎉</div>}
+            {data.upcomingAssignments.length === 0 && <div className="empty">Nothing due in the next 7 days</div>}
             {data.upcomingAssignments.map((a) => {
               const d = daysUntil(a.dueDate);
               return (
@@ -77,7 +77,7 @@ export default function Dashboard() {
 
       <div className="grid cols-2">
         <div className="card">
-          <h3>🎯 Upcoming exams <Link to="/app/exams" style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--primary)' }}>All exams →</Link></h3>
+          <h3>Upcoming exams <Link to="/app/exams" style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--primary)' }}>All exams →</Link></h3>
           <div className="list">
             {data.upcomingExams.length === 0 && <div className="empty">No exams scheduled. Lucky you!</div>}
             {data.upcomingExams.map((e) => {
@@ -97,7 +97,7 @@ export default function Dashboard() {
         </div>
 
         <div className="card">
-          <h3>📊 Semester progress</h3>
+          <h3>Semester progress</h3>
           <div style={{ marginBottom: 8, fontSize: 13, color: 'var(--muted)' }}>
             Assignments completed: <b style={{ color: 'var(--text)' }}>{stats.completedAssignments}/{totalA}</b>
           </div>

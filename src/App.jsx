@@ -12,13 +12,13 @@ import Notes from './pages/Notes';
 import Focus from './pages/Focus';
 
 const NAV = [
-  { to: '/app', icon: '◧', label: 'Dashboard', end: true },
-  { to: '/app/schedule', icon: '🗓', label: 'Schedule' },
-  { to: '/app/subjects', icon: '📚', label: 'Subjects & Slides' },
-  { to: '/app/assignments', icon: '✅', label: 'Assignments' },
-  { to: '/app/exams', icon: '🎯', label: 'Exams' },
-  { to: '/app/notes', icon: '📝', label: 'Notes' },
-  { to: '/app/focus', icon: '⏱', label: 'Focus Timer' },
+  { to: '/app', label: 'Dashboard', end: true },
+  { to: '/app/schedule', label: 'Schedule' },
+  { to: '/app/subjects', label: 'Subjects & Slides' },
+  { to: '/app/assignments', label: 'Assignments' },
+  { to: '/app/exams', label: 'Exams' },
+  { to: '/app/notes', label: 'Notes' },
+  { to: '/app/focus', label: 'Focus Timer' },
 ];
 
 function Shell({ theme, setTheme, children }) {
@@ -31,14 +31,12 @@ function Shell({ theme, setTheme, children }) {
         <div className="logo"><span className="logo-mark">S</span> StudyFlow</div>
         <nav className="nav">
           {NAV.map((n) => (
-            <NavLink key={n.to} to={n.to} end={n.end}>
-              <span className="icon">{n.icon}</span> {n.label}
-            </NavLink>
+            <NavLink key={n.to} to={n.to} end={n.end}>{n.label}</NavLink>
           ))}
         </nav>
         <div className="sidebar-footer">
           <button className="btn sm" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-            {theme === 'light' ? '🌙 Dark mode' : '☀️ Light mode'}
+            {theme === 'light' ? 'Dark mode' : 'Light mode'}
           </button>
           <div className="userbox">
             <div className="avatar">{(user?.name || '?')[0].toUpperCase()}</div>
@@ -47,7 +45,7 @@ function Shell({ theme, setTheme, children }) {
               <span>{user?.email}</span>
             </div>
           </div>
-          <button className="btn sm" onClick={logout}>↩ Log out</button>
+          <button className="btn sm" onClick={logout}>Log out</button>
         </div>
       </aside>
       <main className="main">{children}</main>

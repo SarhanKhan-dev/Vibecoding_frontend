@@ -69,7 +69,7 @@ export default function Login({ register = false }) {
           </form>
           {!register && (
             <div className="demo-hint" onClick={fillDemo}>
-              🎓 Demo account: demo@student.com / demo123 — click to fill
+             Demo account: demo@student.com / demo123 — click to fill
             </div>
           )}
           <div className="auth-switch">
