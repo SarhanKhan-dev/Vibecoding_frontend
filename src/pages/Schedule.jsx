@@ -182,4 +182,5 @@ function SlotModal({ slot, subjects, onSave, onDelete, onClose }) {
         </div>
       </div>
     </div>
-  )
+  );
+}
