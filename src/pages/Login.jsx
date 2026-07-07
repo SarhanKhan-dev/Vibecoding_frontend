@@ -4,7 +4,7 @@ import { api, setSession } from '../api';
 
 export default function Login({ register = false }) {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', password: '', university: '', major: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', university: '', major: '', role: 'student' });
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -39,6 +39,15 @@ export default function Login({ register = false }) {
           <form onSubmit={submit}>
             {register && (
               <div className="field">
+                <label>I am a</label>
+                <div className="tabs" style={{ marginBottom: 0 }}>
+                  <button type="button" className={form.role === 'student' ? 'active' : ''} onClick={() => setForm({ ...form, role: 'student' })}>Student</button>
+                  <button type="button" className={form.role === 'teacher' ? 'active' : ''} onClick={() => setForm({ ...form, role: 'teacher' })}>Teacher</button>
+                </div>
+              </div>
+            )}
+            {register && (
+              <div className="field">
                 <label>Full name</label>
                 <input value={form.name} onChange={set('name')} placeholder="Alex Student" required />
               </div>
@@ -69,7 +78,13 @@ export default function Login({ register = false }) {
           </form>
           {!register && (
             <div className="demo-hint" onClick={fillDemo}>
-             Demo account: demo@student.com / demo123 — click to fill
+              Student: demo@student.com / demo123 — click to fill
+            </div>
+            <div className="demo-hint" onClick={() => setForm({ ...form, email: 'teacher@studyflow.com', password: 'teacher123' })}>
+              Teacher: teacher@studyflow.com / teacher123 — click to fill
+            </div>
+            <div className="demo-hint" onClick={() => setForm({ ...form, email: 'admin@studyflow.com', password: 'admin123' })}>
+              Superadmin: admin@studyflow.com / admin123 — click to fill
             </div>
           )}
           <div className="auth-switch">
