@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, NavLink, Navigate, useNavigate } from 'react-router-dom';
-import { getToken, getUser, clearSession } from './api';
+import { api, getToken, getUser, clearSession } from './api';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -24,7 +24,11 @@ const NAV = [
 function Shell({ theme, setTheme, children }) {
   const user = getUser();
   const navigate = useNavigate();
-  const logout = () => { clearSession(); navigate('/login'); };
+  const logout = async () => {
+    try { await api('/auth/logout', { method: 'DELETE' }); } catch {}
+    clearSession();
+    navigate('/login');
+  };
   return (
     <div className="app">
       <aside className="sidebar">
