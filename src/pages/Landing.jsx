@@ -14,7 +14,7 @@ export default function Landing() {
   return (
     <div className="landing">
       <nav className="landing-nav">
-        <div className="logo"><span className="logo-mark">S</span> StudyFlow</div>
+        <div className="logo"><span className="logo-mark">S</span> StudyOKA</div>
         <div style={{ display: 'flex', gap: 10 }}>
           <Link to="/login" className="btn">Log in</Link>
           <Link to="/register" className="btn primary">Get started free</Link>
@@ -23,7 +23,7 @@ export default function Landing() {
       <section className="hero">
         <h1>Your academic life,<br /><span className="grad">finally organized.</span></h1>
         <p>
-          StudyFlow brings your timetable, lecture slides, assignments, exams, notes and GPA
+          StudyOKA brings your timetable, lecture slides, assignments, exams, notes and GPA
           into one fast, simple workspace — built for students who have better things to do than stay disorganized.
         </p>
         <div className="hero-cta">

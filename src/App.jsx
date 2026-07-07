@@ -61,7 +61,7 @@ function Shell({ theme, setTheme, children }) {
   return (
     <div className="app">
       <aside className="sidebar">
-        <div className="logo"><span className="logo-mark">S</span> StudyFlow</div>
+        <div className="logo"><span className="logo-mark">S</span> StudyOKA</div>
         <div style={{ padding: '0 10px 12px' }}>
           <span className="badge todo" style={{ textTransform: 'capitalize' }}>{role}</span>
         </div>

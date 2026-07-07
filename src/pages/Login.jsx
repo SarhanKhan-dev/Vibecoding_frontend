@@ -30,7 +30,7 @@ export default function Login({ register = false }) {
     <div className="auth-page">
       <div className="auth-card">
         <div className="logo" style={{ justifyContent: 'center', marginBottom: 14 }}>
-          <span className="logo-mark">S</span> StudyFlow
+          <span className="logo-mark">S</span> StudyOKA
         </div>
         <div className="card">
           <h1>{register ? 'Create your account' : 'Welcome back'}</h1>
@@ -81,11 +81,11 @@ export default function Login({ register = false }) {
               <div className="demo-hint" onClick={fillDemo}>
                 Student: demo@student.com / demo123 — click to fill
               </div>
-              <div className="demo-hint" onClick={() => setForm({ ...form, email: 'teacher@studyflow.com', password: 'teacher123' })}>
-                Teacher: teacher@studyflow.com / teacher123 — click to fill
+              <div className="demo-hint" onClick={() => setForm({ ...form, email: 'teacher@studyoka.com', password: 'teacher123' })}>
+                Teacher: teacher@studyoka.com / teacher123 — click to fill
               </div>
-              <div className="demo-hint" onClick={() => setForm({ ...form, email: 'admin@studyflow.com', password: 'admin123' })}>
-                Superadmin: admin@studyflow.com / admin123 — click to fill
+              <div className="demo-hint" onClick={() => setForm({ ...form, email: 'admin@studyoka.com', password: 'admin123' })}>
+                Superadmin: admin@studyoka.com / admin123 — click to fill
               </div>
             </>
           )}
